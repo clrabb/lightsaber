@@ -6,20 +6,24 @@
 void 
 Sound::play()
 {
-    this->play_imp();   
-    //this->stop_playing();
-    delay(500);
+    this->play_imp_pre();   
     this->play_track();
+    this->play_imp_post();
 
     return; 
 }
 
 void 
-Sound::play_imp()
+Sound::play_imp_pre()
 {
     // This space intentionally left blank
 
     return;
+}
+
+void 
+Sound::play_imp_post()
+{
 }
 
 void 

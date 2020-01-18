@@ -16,7 +16,8 @@ public:
     }
 
     virtual void play();
-    virtual void play_imp();
+    virtual void play_imp_pre();
+    virtual void play_imp_post();
     virtual void stop_playing();
     uint8_t track_number() { return this->m_track_num; }
 
