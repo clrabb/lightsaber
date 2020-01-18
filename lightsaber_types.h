@@ -1,6 +1,8 @@
 #ifndef LIGHTSABER_TYPES_H
 #define LIGHTSABER_TYPES_H
 
+#include <Adafruit_Soundboard.h>
+/*
 enum sounds
 {
     HUM_NUM,  
@@ -13,7 +15,7 @@ enum sounds
     SPIN1_NUM,
     SPIN2_NUM   
 };
-
+*/
 typedef Adafruit_Soundboard Soundboard;
 
 #endif // LIGHTSABER_TYPES_H
