@@ -3,23 +3,11 @@
 #include "singleton_t.h"
 #include "sound.h"
 
+#include "sound_manager.h"
+
 #include <SoftwareSerial.h>
 
-enum sounds
-{
-    HUM_NUM,  
-    POWERON_NUM, 
-    POWEROFF_NUM,
-    SWING1_NUM,
-    SWING2_NUM,
-    CLASH1_NUM,
-    CLASH2_NUM,
-    SPIN1_NUM,
-    SPIN2_NUM   
-};
 
-Sound hum( static_cast< uint8_t >( 0 ) ); 
-Sound power_on( static_cast< uint8_t >( 1 ) );
 
 void setup() {
     Serial.begin( 115200 );
@@ -29,11 +17,9 @@ void setup() {
 
 }
 
-void loop() {
-    hum.play();
-    delay( 1000 );
-    hum.stop_playing();
-    power_on.play();
+void loop() 
+{
+
     
 }
 
@@ -45,7 +31,7 @@ void init_pins()
 void init_soundboard()
 {
     SoftwareSerial& ss = singleton_t< SoftwareSerial >::instance();
-    Soundboard& sfx = singleton_t< Soundboard >::instance();  
+    soundboard& sfx = singleton_t< soundboard >::instance();  
     
     ss.begin( SOUNDBOARD_BAUD );
     if ( !( sfx.reset() ) )
@@ -62,5 +48,5 @@ void init_singletons()
     singleton_t< SoftwareSerial >( new SoftwareSerial( SFX_RX, SFX_TX ) );
     SoftwareSerial& ss = singleton_t< SoftwareSerial >::instance();
 
-    singleton_t< Soundboard >( new Soundboard( &(ss), NULL, SFX_RST ) );
+    singleton_t< soundboard >( new soundboard( &(ss), NULL, SFX_RST ) );
 }

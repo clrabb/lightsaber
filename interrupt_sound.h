@@ -3,10 +3,10 @@
 
 #include "sound.h"
 
-class InterruptSound : Sound
+class interrupt_sound : sound
 {
-    InterruptSound( uint8_t track_number )
-        : Sound( track_number )
+    interrupt_sound( uint8_t track_number )
+        : sound( track_number )
     {       
     }
 

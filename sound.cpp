@@ -4,7 +4,7 @@
 #include "singleton_t.h"
 
 void 
-Sound::play()
+sound::play()
 {
     this->play_imp_pre();   
     this->play_track();
@@ -14,7 +14,7 @@ Sound::play()
 }
 
 void 
-Sound::play_imp_pre()
+sound::play_imp_pre()
 {
     // This space intentionally left blank
 
@@ -22,21 +22,31 @@ Sound::play_imp_pre()
 }
 
 void 
-Sound::play_imp_post()
+sound::play_imp_post()
 {
 }
 
 void 
-Sound::stop_playing()
+sound::stop_playing()
 {
-    Soundboard& sfx = singleton_t< Soundboard >::instance();
+    soundboard& sfx = singleton_t< soundboard >::instance();
     sfx.stop();
 }
 
 void 
-Sound::play_track()
+sound::play_track()
 {
-
-    Soundboard& sfx = singleton_t< Soundboard >::instance();
+    if ( this->is_playing() )
+    {
+        this->stop_playing();
+    }
+    
+    soundboard& sfx = singleton_t< soundboard >::instance();
     sfx.playTrack( static_cast< uint8_t >( this->track_number() ) );
+}
+
+boolean
+sound::is_playing()
+{
+    return digitalRead( SFX_ACT ) == LOW;
 }

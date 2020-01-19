@@ -2,9 +2,9 @@
 #include "singleton_t.h"
 
 void
-InterruptSound::play_pre_imp()
+interrupt_sound::play_imp_pre()
 {
-    Soundboard& sfx = singleton_t< Soundboard >::instance();
+    soundboard& sfx = singleton_t< soundboard >::instance();
     sfx.stop();
 
     return;
