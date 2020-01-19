@@ -3,13 +3,15 @@
 
 #include "sound.h"
 
-class interrupt_sound : sound
+class interrupt_sound : public sound
 {
+public:
     interrupt_sound( uint8_t track_number )
         : sound( track_number )
     {       
     }
 
+protected:
     virtual void play_imp_pre();
 };
 

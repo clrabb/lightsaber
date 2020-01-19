@@ -27,10 +27,6 @@ public:
     virtual void stop_playing();
 
 
-    // Testing
-    //
-    boolean is_playing();
-
 private:
     void play_track();
     

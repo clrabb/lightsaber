@@ -2,6 +2,7 @@
 #define SOUND_MANAGER_H
 
 #include "sound.h"
+#include "interrupt_sound.h"
 
 class sound_manager
 {
@@ -11,15 +12,15 @@ private:
     //
     enum sounds
     {
-        HUM_NUM,  
-        POWERON_NUM, 
-        POWEROFF_NUM,
-        SWING1_NUM,
-        SWING2_NUM,
-        CLASH1_NUM,
-        CLASH2_NUM,
-        SPIN1_NUM,
-        SPIN2_NUM   
+        HUM_NUM         = 0,  
+        POWERON_NUM     = 1, 
+        POWEROFF_NUM    = 2,
+        SWING1_NUM      = 3,
+        SWING2_NUM      = 4,
+        CLASH1_NUM      = 5,
+        CLASH2_NUM      = 6,
+        SPIN1_NUM       = 7,
+        SPIN2_NUM       = 8   
     };
 
     static const short NUM_SWING_SOUNDS = 2;
@@ -32,12 +33,19 @@ private:
     sound* m_clash_sounds[ NUM_CLASH_SOUNDS ];
     sound* m_spin_sounds[  NUM_SPIN_SOUNDS  ];
     sound* m_background_sound;
+    sound* m_current_sound;
 
     // Initialization
     //
     void init_swing_sounds();
     void init_clash_sounds();
     void init_spin_sounds();
+
+    // Getters/setters
+    //
+    void current_sound( sound* a_sound ) { this->m_current_sound = a_sound; } 
+    sound* current_sound() { return this->m_current_sound; }
+    sound* background_sound() { return this->m_background_sound; }
 
 public:
 
@@ -47,6 +55,13 @@ public:
     void play_random_swing();
     void play_random_spin();
     void play_background();
+    void play();
+
+    // Testing
+    //
+    boolean is_playing();
+
+    
     
 public:
     sound_manager();

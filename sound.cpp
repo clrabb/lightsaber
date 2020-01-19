@@ -24,6 +24,8 @@ sound::play_imp_pre()
 void 
 sound::play_imp_post()
 {
+    // This space intentionally left blank
+    return;
 }
 
 void 
@@ -35,18 +37,7 @@ sound::stop_playing()
 
 void 
 sound::play_track()
-{
-    if ( this->is_playing() )
-    {
-        this->stop_playing();
-    }
-    
+{    
     soundboard& sfx = singleton_t< soundboard >::instance();
     sfx.playTrack( static_cast< uint8_t >( this->track_number() ) );
-}
-
-boolean
-sound::is_playing()
-{
-    return digitalRead( SFX_ACT ) == LOW;
 }
