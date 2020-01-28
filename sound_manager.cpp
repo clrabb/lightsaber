@@ -35,7 +35,7 @@ sound_manager::init_spin_sounds()
 boolean
 sound_manager::is_playing()
 {
-    return digitalRead( SFX_ACT ) == LOW;
+    return digitalRead( SFX_ACT_PIN ) == LOW;
 }
 
 void 
