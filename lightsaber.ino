@@ -15,13 +15,12 @@ void setup()
     
     init_singletons();
     init_pins();
-    //init_soundboard();
+    init_soundboard();
     //init_accel();
     //randomSeed( analogRead( 0 ) );
 }
 
 
-int next_fire = 2000; // random( 6000 );
 
 void loop() 
 {
