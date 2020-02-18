@@ -3,65 +3,42 @@
 #include "singleton_t.h"
 #include "sound.h"
 #include "heartbeat.h"
+#include "movement.h"
 #include <Wire.h>
 
 #include "sound_manager.h"
-#include <SoftwareSerial.h>
 
 unsigned long last_millis = millis();
 void setup() 
 {
-    Serial.begin( 115200 );
+    Serial.begin( 9600 );
+    
     init_singletons();
     init_pins();
     //init_soundboard();
     //init_accel();
-    randomSeed( analogRead( 0 ) );
+    //randomSeed( analogRead( 0 ) );
 }
 
 
-int next_fire = 3000; // random( 6000 );
+int next_fire = 2000; // random( 6000 );
 
 void loop() 
 {
-
-/*
-    
+    movement& m = singleton_t< movement >::instance();
     sound_manager& manager = singleton_t< sound_manager >::instance();
-    manager.play_background();
-    unsigned long now = millis();
-    long interval = now - last_millis;
-    if ( ( interval ) >= next_fire )
+    if ( m.has_clashed() )
     {
-        next_fire = random( 500, 3000 );
-        Serial.print( "Delay was: " );
-        Serial.print( next_fire );
-        Serial.print( "  Interval was: " );
-        Serial.println( interval );
-
-        int sound_type = random( 3 );
-        Serial.print( "Sound index was: " );
-        Serial.println( sound_type );
-        switch ( sound_type )
-        {
-            case 0: 
-                manager.play_random_clash();
-                break;
-
-            case 1:
-                manager.play_random_swing();
-                break;
-
-            case 2:
-                manager.play_random_spin();
-                break;
-        }
-        
-        manager.play_background();
-        last_millis = now;
+        manager.play_random_clash();
+    } 
+    else if ( m.has_spun() )
+    {
+        manager.play_random_spin();
     }
-
-    */
+    else if ( m.has_swung() )
+    {
+        manager.play_random_swing();
+    }
 
     heartbeat& hb = singleton_t< heartbeat >::instance();
     hb.beat();
@@ -69,11 +46,14 @@ void loop()
 
 void init_pins()
 {
-    pinMode( SFX_ACT_PIN, INPUT );
+    pinMode( SFX_ACT_PIN, INPUT     );
+    pinMode( LED_BUILTIN, OUTPUT    );
+    pinMode( HEARTBEAT_PIN, OUTPUT  );
 }
 
 void init_accel()
 {
+    Serial.println( "About to init accel" );
     accelerometer& accel = singleton_t< accelerometer >::instance();
 
     /* Initialise the sensor */
@@ -94,32 +74,29 @@ void init_accel()
 
 void init_soundboard()
 {
-    SoftwareSerial& ss = singleton_t< SoftwareSerial >::instance();
     soundboard& sfx = singleton_t< soundboard >::instance();  
+    Serial.println("About to init soundboard" );
+    Serial1.begin( SOUNDBOARD_BAUD );
     
-    ss.begin( SOUNDBOARD_BAUD );
     if ( !( sfx.reset() ) )
     {
         Serial.println( "Not Found" );
         while( 1 );
     }
 
-    sfx.volDown();
-    sfx.volDown();
-    sfx.volDown();
-    sfx.volDown();
+    for ( short i = 0; i < 21; ++i )
+    {
+        sfx.volDown();
+    }
+
 
     Serial.println( "Found board" );
 }
 
 void init_singletons()
 {  
-    /*
-
-    singleton_t< SoftwareSerial >( new SoftwareSerial( SFX_RX_PIN, SFX_TX_PIN ) );
-    SoftwareSerial& ss = singleton_t< SoftwareSerial >::instance();
-
-    singleton_t< soundboard >( new soundboard( &(ss), NULL, SFX_RST_PIN ) );
-    singleton_t< sound_manager >( new sound_manager() ); */
+    singleton_t< sound_manager >( new sound_manager() ); 
+    singleton_t< soundboard >( new soundboard( &(Serial1), NULL, SFX_RST_PIN ) );
+    singleton_t< accelerometer >( new accelerometer( 12345 ) );
     singleton_t< heartbeat >( new heartbeat( HEARTBEAT_PIN, HEARTBEAT_DURATION_OFF, HEARTBEAT_DURATION_ON ) );
 }

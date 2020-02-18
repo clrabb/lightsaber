@@ -1,7 +1,7 @@
 #ifndef HEARTBEAT_H
 #define HEARTBEAT_H
 
-#include <Arduino.h>
+#include "lightsaber_types.h"
 
 // The ENTIRE purpose of this class is to not do a delay() for the flashing of the led.
 // I don't know if this will work or not but I'm trying to remove all calls to delay().
@@ -23,6 +23,7 @@ class heartbeat
     uint8_t       m_led_pin                  = 0;
     unsigned long m_mills_between_beats      = 0;
     unsigned long m_beat_length_mills        = 0;
+    boolean       m_is_on                    = false;
 
   public:
     // Ctor
@@ -32,8 +33,9 @@ class heartbeat
     // Accessors
     //
     unsigned long last_state_change_mills() { return m_last_state_change_mills; }
-    void last_state_change_mills( unsigned long mills ) {
-      m_last_state_change_mills = mills;
+    void last_state_change_mills( unsigned long mills ) 
+    {
+        m_last_state_change_mills = mills;
     }
 
     uint8_t led_pin() { return m_led_pin; }
@@ -45,6 +47,21 @@ class heartbeat
     unsigned long beat_length_mills() { return m_beat_length_mills; }
     void beat_length_mills( unsigned long mills ) { m_beat_length_mills = mills; }
 
+    boolean is_on()
+    {
+        return this->m_is_on;
+    }
+
+    boolean is_off()
+    {
+        return !( this->is_on() );
+    }
+
+    void is_on( boolean state )
+    {
+        this->m_is_on = state;
+    }
+
     // Behavior
     //
     void beat();
@@ -55,8 +72,6 @@ class heartbeat
 
     // Testing
     //
-    bool is_on();
-    bool is_off();
     unsigned long time_on();
     unsigned long time_off();
 
