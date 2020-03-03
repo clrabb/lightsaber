@@ -72,8 +72,6 @@ heartbeat::turn_on()
     digitalWrite( this->led_pin(), HIGH );
     digitalWrite( LED_BUILTIN, HIGH );
 
-    Serial.println( "on" );
-
     this->last_state_change_mills( millis() );
     return;
 }

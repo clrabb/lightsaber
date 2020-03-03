@@ -3,6 +3,7 @@
 
 #include "sound.h"
 #include "interrupt_sound.h"
+#include "repeating_sound.h"
 
 class sound_manager
 {
@@ -29,10 +30,10 @@ private:
 
     // Members
     //
-    sound* m_swing_sounds[ NUM_SWING_SOUNDS ];
-    sound* m_clash_sounds[ NUM_CLASH_SOUNDS ];
-    sound* m_spin_sounds[  NUM_SPIN_SOUNDS  ];
-    sound* m_background_sound;
+    interrupt_sound* m_swing_sounds[ NUM_SWING_SOUNDS ];
+    interrupt_sound* m_clash_sounds[ NUM_CLASH_SOUNDS ];
+    interrupt_sound* m_spin_sounds[  NUM_SPIN_SOUNDS  ];
+    repeating_sound* m_background_sound;
     sound* m_current_sound;
 
     // Initialization
@@ -40,12 +41,16 @@ private:
     void init_swing_sounds();
     void init_clash_sounds();
     void init_spin_sounds();
+    void init_background_sound();
 
     // Getters/setters
     //
     void current_sound( sound* a_sound ) { this->m_current_sound = a_sound; } 
     sound* current_sound() { return this->m_current_sound; }
-    sound* background_sound() { return this->m_background_sound; }
+    
+    void background_sound( repeating_sound* a_sound ){ this->m_background_sound = a_sound; }
+    repeating_sound* background_sound(){ return this->m_background_sound; }
+    
 
 public:
 
@@ -61,7 +66,11 @@ public:
     //
     boolean is_playing();
 
-    
+    // Give some time to the manager
+    //
+    void tick();
+    void tick_from_repeating_sound( sound& a_sound );
+    void tick_from_sound( sound& a_sound );
     
 public:
     sound_manager();

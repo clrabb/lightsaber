@@ -12,9 +12,11 @@ unsigned long last_millis = millis();
 void setup() 
 {
     Serial.begin( 9600 );
+    while( !Serial );
+    //Serial.println( "Serial port init'd" );
     
-    init_singletons();
     init_pins();
+    init_singletons();
     init_soundboard();
     //init_accel();
     //randomSeed( analogRead( 0 ) );
@@ -22,10 +24,38 @@ void setup()
 
 
 
+uint8_t type_to_play = 0;
 void loop() 
 {
     movement& m = singleton_t< movement >::instance();
     sound_manager& manager = singleton_t< sound_manager >::instance();
+
+
+    while( 1 )
+    {
+        if ( type_to_play++ == 0 )
+        {
+            manager.play_background();
+        }
+        else if ( type_to_play++ == 1 )
+        {
+            manager.play_random_clash();
+        }
+        else if ( type_to_play == 2 )
+        {
+            manager.play_random_spin();
+            type_to_play = 0;
+        }
+        
+        delay( 5000 );
+    }
+
+
+
+    
+
+    
+    /*
     if ( m.has_clashed() )
     {
         manager.play_random_clash();
@@ -38,9 +68,11 @@ void loop()
     {
         manager.play_random_swing();
     }
+    */
 
     heartbeat& hb = singleton_t< heartbeat >::instance();
     hb.beat();
+    manager.tick();
 }
 
 void init_pins()
@@ -75,19 +107,22 @@ void init_soundboard()
 {
     soundboard& sfx = singleton_t< soundboard >::instance();  
     Serial.println("About to init soundboard" );
-    Serial1.begin( SOUNDBOARD_BAUD );
+    serial_output.begin( SOUNDBOARD_BAUD );
+
     
-    if ( !( sfx.reset() ) )
+    delay( 1000 );
+
+    if (!sfx.reset()) 
     {
-        Serial.println( "Not Found" );
+        Serial.println("Not found");
         while( 1 );
     }
 
-    for ( short i = 0; i < 21; ++i )
+
+    for ( short i = 0; i < 2; ++i )
     {
         sfx.volDown();
     }
-
 
     Serial.println( "Found board" );
 }
@@ -95,7 +130,9 @@ void init_soundboard()
 void init_singletons()
 {  
     singleton_t< sound_manager >( new sound_manager() ); 
-    singleton_t< soundboard >( new soundboard( &(Serial1), NULL, SFX_RST_PIN ) );
+    
+    singleton_t< soundboard >( new soundboard( &(serial_output), NULL, SFX_RST_PIN ) );
+    
     singleton_t< accelerometer >( new accelerometer( 12345 ) );
     singleton_t< heartbeat >( new heartbeat( HEARTBEAT_PIN, HEARTBEAT_DURATION_OFF, HEARTBEAT_DURATION_ON ) );
 }

@@ -5,7 +5,10 @@ void
 interrupt_sound::play_imp_pre()
 {
     soundboard& sfx = singleton_t< soundboard >::instance();
-    sfx.stop();
+    if ( this->is_playing() )
+    {
+        sfx.stop();
+    }
 
     return;
 }

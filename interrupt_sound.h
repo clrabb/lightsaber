@@ -11,6 +11,7 @@ public:
     {       
     }
 
+
 protected:
     virtual void play_imp_pre();
 };
