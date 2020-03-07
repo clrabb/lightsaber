@@ -10,10 +10,7 @@ static const long  SOUND_TICK_INTERVAL_MILLIS = 1000;
 
 static const unsigned long    HEARTBEAT_DURATION_ON     = 50;  // milliseconds on
 static const unsigned long    HEARTBEAT_DURATION_OFF    = 1000; // milliseconds off
-/* 
- * How much movement we ignore when x + y + z = 90.
- * 
- */
-static const short JIGGLE_FACTOR = 2;
+
+#define __DEBUG_LOGGING__
 
 #endif // LIGHTSABER_CONSTS_H

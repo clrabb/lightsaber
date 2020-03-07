@@ -1,6 +1,8 @@
 #include "sound_manager.h"
 #include "lightsaber_consts.h"
 #include "sound.h"
+#include "logger.h"
+#include "singleton_t.h"
 
 sound_manager::sound_manager()
 {
@@ -48,13 +50,17 @@ sound_manager::is_playing()
 void 
 sound_manager::play_background()
 {
-    Serial.println( "playing background" );
+    logger& l = singleton_t< logger >::instance();
+    
+    l.println( "playing background" );
     this->m_background_sound->play();
 }
 
 void 
 sound_manager::play_random_clash()
 {
+    //logger& l = singleton_t< logger >::instance();
+    
     int idx = random( NUM_CLASH_SOUNDS );
     this->current_sound( this->m_clash_sounds[ idx ] );
     this->play();
@@ -64,7 +70,9 @@ sound_manager::play_random_clash()
 void
 sound_manager::play_random_swing()
 {
-    Serial.println( "playing random swing" );
+    logger& l = singleton_t< logger >::instance();
+    
+    l.println( "playing random swing" );
     int idx = random( NUM_SWING_SOUNDS );
     this->current_sound( this->m_swing_sounds[ idx ] );
     this->play();
@@ -89,12 +97,18 @@ sound_manager::play()
 void
 sound_manager::tick()
 {
+    logger& l = singleton_t< logger >::instance();
+    
+    l.println( "sound_manager::tick()" );
     this->current_sound()->tick( *this );
 }
 
 void 
 sound_manager::tick_from_sound( sound& a_sound )
 {
+    logger& l = singleton_t< logger >::instance();
+    
+    l.println( "sound_manager::tick_from_sound()" );
     if ( a_sound.is_not_playing() )
     {
         this->current_sound( this->background_sound() );
@@ -106,6 +120,9 @@ sound_manager::tick_from_sound( sound& a_sound )
 void 
 sound_manager::tick_from_repeating_sound( sound& a_sound )
 {
+    logger& l = singleton_t< logger >::instance();
+    
+    l.println( "sound_manager::tick_from_repeating_sound()" );
     if ( a_sound.is_not_playing() )
         a_sound.play(); 
 }

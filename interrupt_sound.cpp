@@ -1,5 +1,6 @@
 #include "interrupt_sound.h"
 #include "singleton_t.h"
+#include "logger.h"
 
 void
 interrupt_sound::play_imp_pre()

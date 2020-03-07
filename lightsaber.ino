@@ -4,8 +4,8 @@
 #include "sound.h"
 #include "heartbeat.h"
 #include "movement.h"
+#include "logger.h"
 #include <Wire.h>
-
 #include "sound_manager.h"
 
 unsigned long last_millis = millis();
@@ -13,7 +13,6 @@ void setup()
 {
     Serial.begin( 9600 );
     while( !Serial );
-    //Serial.println( "Serial port init'd" );
     
     init_pins();
     init_singletons();
@@ -23,16 +22,18 @@ void setup()
 }
 
 
-
+boolean count = 0;
 uint8_t type_to_play = 0;
 void loop() 
 {
-    movement& m = singleton_t< movement >::instance();
     sound_manager& manager = singleton_t< sound_manager >::instance();
-
+    logger&        l       = singleton_t< logger >::instance();
 
     while( 1 )
     {
+        if ( count++ > 2 )
+            continue; 
+            
         if ( type_to_play++ == 0 )
         {
             manager.play_background();
@@ -46,29 +47,9 @@ void loop()
             manager.play_random_spin();
             type_to_play = 0;
         }
-        
+
         delay( 5000 );
     }
-
-
-
-    
-
-    
-    /*
-    if ( m.has_clashed() )
-    {
-        manager.play_random_clash();
-    } 
-    else if ( m.has_spun() )
-    {
-        manager.play_random_spin();
-    }
-    else if ( m.has_swung() )
-    {
-        manager.play_random_swing();
-    }
-    */
 
     heartbeat& hb = singleton_t< heartbeat >::instance();
     hb.beat();
@@ -84,14 +65,15 @@ void init_pins()
 
 void init_accel()
 {
-    Serial.println( "About to init accel" );
+    logger& l = singleton_t< logger >::instance();
+    l.println( "About to init accel" );
     accelerometer& accel = singleton_t< accelerometer >::instance();
 
     /* Initialise the sensor */
     if(!accel.begin())
     {
     /* There was a problem detecting the ADXL343 ... check your connections */
-        Serial.println("Ooops, no ADXL343 detected ... Check your wiring!");
+        l.println("Ooops, no ADXL343 detected ... Check your wiring!");
         while(1);
     }
 
@@ -105,8 +87,10 @@ void init_accel()
 
 void init_soundboard()
 {
+    logger& l = singleton_t< logger >::instance();
+    
     soundboard& sfx = singleton_t< soundboard >::instance();  
-    Serial.println("About to init soundboard" );
+    l.println("About to init soundboard" );
     serial_output.begin( SOUNDBOARD_BAUD );
 
     
@@ -114,7 +98,7 @@ void init_soundboard()
 
     if (!sfx.reset()) 
     {
-        Serial.println("Not found");
+        l.println("Not found");
         while( 1 );
     }
 
@@ -124,15 +108,15 @@ void init_soundboard()
         sfx.volDown();
     }
 
-    Serial.println( "Found board" );
+    l.println( "Found board" );
 }
 
 void init_singletons()
 {  
-    singleton_t< sound_manager >( new sound_manager() ); 
+    singleton_t< sound_manager >( new sound_manager()                                   );  
+    singleton_t< soundboard >(    new soundboard( &(serial_output), NULL, SFX_RST_PIN ) ); 
+    singleton_t< accelerometer >( new accelerometer( 12345 )                            );
+    singleton_t< logger >(        new logger( Serial )                                  );
     
-    singleton_t< soundboard >( new soundboard( &(serial_output), NULL, SFX_RST_PIN ) );
-    
-    singleton_t< accelerometer >( new accelerometer( 12345 ) );
-    singleton_t< heartbeat >( new heartbeat( HEARTBEAT_PIN, HEARTBEAT_DURATION_OFF, HEARTBEAT_DURATION_ON ) );
+    singleton_t< heartbeat >(     new heartbeat( HEARTBEAT_PIN, HEARTBEAT_DURATION_OFF, HEARTBEAT_DURATION_ON ) );
 }
